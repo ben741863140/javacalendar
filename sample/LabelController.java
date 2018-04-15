@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -24,9 +26,10 @@ public class LabelController {
 	Controller T = new Controller();
 	
 	@FXML
-	public void save_reminder() {
+	public void save_reminder() throws IOException {
 		String A=reminderdata.getText();
-		T.addremind(A);
+//		System.out.println(NL.getText());
+		T.addremind(A,NL.getText());
 		return;
 	}
 	

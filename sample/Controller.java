@@ -10,6 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -323,8 +329,8 @@ public class Controller implements Initializable {
     TextArea reminderta;
     
 
-
-   List<String> remind = new ArrayList<String>();
+   List<Node> remind = new ArrayList<Node>();
+//   List<String> remind = new ArrayList<String>();
    int year[] = new int[202];
    int month[] = new int [13];
    int ChosenButton;
@@ -680,25 +686,116 @@ public void ld37() throws Exception
     loadreminder();
 }
 
-public void Check() {	//查询当前日期有没有提醒
+//ArrayList<Integer>list = new ArrayList<Integer>();
+public int Stringtonum(String s){
+	int res = 0;
+	int len = s.length();
+	for(int i=0;i<len;++i){
+		res *= 10;
+		res = res + s.charAt(i) - '0';
+	}
+	return res;
+}
+public String CaseString(int x){
+	return "t%e^x.t@n#u!m*b&e(r" + x;
+}
+public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 	
 	//从文件中读取 如果有则显示提醒并删除
+	remind.clear();
+	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
+	String qwe = this.getClass().getResource("").getPath() + "remind.txt";
+	System.out.println(qwe);
+	Scanner in = new Scanner(new FileInputStream(f));
+	String szs = in.nextLine();
+//	System.out.println(szs);
+	int sz = Stringtonum(szs);
+	String nextcase = CaseString(0);
+	String now = "";
+	int cnt = 0;
+	while(in.hasNext()){
+		String str = in.nextLine();
+		if(str.equals(nextcase)){
+			String date = in.nextLine();
+			System.out.println(now   + date);
+			Node toadd = new Node(now,date);
+			remind.add(toadd);
+			cnt = cnt + 1;
+			if(cnt==sz)break;
+			now = "";
+			nextcase = CaseString(cnt);
+		}
+		else now = now + str + '\n';
+	}
+	in.close();
 }
 
-public void addremind(String A) {
-	remind.add(A);
-	for(int i=0; i<remind.size(); ++i) {
-		System.out.println(remind.get(i));
+public void savefile() throws IOException
+{
+	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
+//	File path = new File("\\remind.txt");//参数为空
+	String courseFile = f.getCanonicalPath() ;
+	System.out.println(courseFile);
+	PrintStream out = new PrintStream(f);
+	int sz = remind.size();
+	out.println(sz);
+	for(int i=0;i<sz;++i){
+		Node no = remind.get(i);
+		out.println(no.gettext());
+		out.println("t%e^x.t@n#u!m*b&e(r"+i);
+		out.println(no.getdate());
+		
 	}
+	out.close();
+	//弹窗：保存成功
+}
+public void addremind(String A,String B) throws IOException {
+	
+	Node toadd = new Node(A,B);
+//	System.out.println("wocao");
+	remind.add(toadd);
+	savefile();
+//	System.out.println("wocao");
+//	savefile();
+//	remind.add(A);
+//	ans = remind.size();
+//	System.out.println(ans);
+//	for(int i=0; i<remind.size(); ++i) {
+//		System.out.println(remind.get(i));
+//	}
+	
+	
 }
 
 public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
-	
+	reminderta.setText("");
+	SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");  
+	Calendar today = Calendar.getInstance();  
+	Lunar lunar = new Lunar(today); 
+	String display = "    公历" + chineseDateFormat.format(today.getTime()) + "　农历" + lunar;
+	int sz = remind.size();
+	int cnt = sz;
+	for(int i=0;i<sz;++i){
+		Node no = remind.get(i);
+		String date = no.getdate();
+		if(date.equals(display)){
+			reminderta.setText(reminderta.getText()+'\n'+"今日为：\n" +display +'\n' + "有提醒事项。");
+			--cnt;
+		}
+	}
+	if(sz!=cnt){
+		reminderta.setText(reminderta.getText()+'\n'+"此外还有"+cnt+"个提醒事项。");
+	}
+	else reminderta.setText(reminderta.getText()+ '\n' + "总共有" + sz + "个提醒事项。");
 }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	Check();
+    	try {
+			Check();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
     	Alarm();
     }
 }
