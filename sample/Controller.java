@@ -709,6 +709,14 @@ public int Stringtonum(String s){
 public String CaseString(int x){
 	return "t%e^x.t@n#u!m*b&e(r" + x;
 }
+
+public boolean Pop_win(String s){
+	Alert _a= new Alert(Alert.AlertType.CONFIRMATION,s,new ButtonType("确认", ButtonBar.ButtonData.YES));
+	_a.setTitle(s);
+	Optional<ButtonType> _buttonType = _a.showAndWait();
+	return true;
+}
+
 public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 	
 	//从文件中读取 如果有则显示提醒并删除
@@ -810,6 +818,7 @@ public void savefile() throws IOException
 		
 	}
 	out.close();
+	Pop_win("保存成功");
 	//弹窗：保存成功
 }
 
@@ -836,6 +845,7 @@ public void addremind(String A,String B) throws IOException {
 
 public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
 	//实际上save之后不能更新提示框内容  需要修改
+	reminderta.clear();
 	reminderta.setText("");
 	SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");  
 	Calendar today = Calendar.getInstance();  
@@ -858,6 +868,7 @@ public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
 	if(had==true){
 		reminderta.setText(reminderta.getText() + "今日为:\n" + display + '\n' + "还有提醒事项未处理" + '\n');
 		//弹窗 ：今日有提醒事项
+		Pop_win("今日有提醒事项");
 	}
 }
 
