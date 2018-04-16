@@ -329,7 +329,7 @@ public class Controller implements Initializable {
     TextArea reminderta;
     
 
-   List<Node> remind = new ArrayList<Node>();
+   static List<Node> remind = new ArrayList<Node>();
 //   List<String> remind = new ArrayList<String>();
    int year[] = new int[202];
    int month[] = new int [13];
@@ -456,6 +456,16 @@ public void loadreminder() throws  Exception
 	String display = "    公历" + chineseDateFormat.format(today.getTime()) + "　农历" + lunar;
 //	System.out.println(display);
 	chosen.setDay(display);
+	String text = "";
+	int sz = remind.size();
+	for(int i=0;i<sz;++i){
+		Node no = remind.get(i);
+		if(display.equals(no.getdate())){
+			text = no.gettext();
+			break;
+		}
+	}
+	chosen.setText(text);
     Parent root = FXMLLoader.load(getClass().getResource("/reminder.fxml"));
     Stage stage = new Stage();
     stage.setTitle("备忘录");
@@ -705,7 +715,7 @@ public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 	remind.clear();
 	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
 	String qwe = this.getClass().getResource("").getPath() + "remind.txt";
-	System.out.println(qwe);
+//	System.out.println(qwe);
 	Scanner in = new Scanner(new FileInputStream(f));
 	String szs = in.nextLine();
 //	System.out.println(szs);
@@ -717,7 +727,7 @@ public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 		String str = in.nextLine();
 		if(str.equals(nextcase)){
 			String date = in.nextLine();
-			System.out.println(now   + date);
+//			System.out.println(now   + date);
 			Node toadd = new Node(now,date);
 			remind.add(toadd);
 			cnt = cnt + 1;
@@ -735,7 +745,7 @@ public void savefile() throws IOException
 	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
 //	File path = new File("\\remind.txt");//参数为空
 	String courseFile = f.getCanonicalPath() ;
-	System.out.println(courseFile);
+//	System.out.println(courseFile);
 	PrintStream out = new PrintStream(f);
 	int sz = remind.size();
 	out.println(sz);
@@ -749,44 +759,65 @@ public void savefile() throws IOException
 	out.close();
 	//弹窗：保存成功
 }
-public void addremind(String A,String B) throws IOException {
-	
-	Node toadd = new Node(A,B);
-//	System.out.println("wocao");
-	remind.add(toadd);
-	savefile();
-//	System.out.println("wocao");
-//	savefile();
-//	remind.add(A);
-//	ans = remind.size();
-//	System.out.println(ans);
-//	for(int i=0; i<remind.size(); ++i) {
-//		System.out.println(remind.get(i));
+//public String findremind(String s){
+//	System.out.println(s);
+//	int sz = remind.size();
+//	System.out.println(sz);
+//	for(int i=0;i<sz;++i){
+//		Node no = remind.get(i);
+//		System.out.println(no.getdate());
+//		if(s.equals(no.getdate())){
+//			return no.gettext();
+//		}
 //	}
-	
-	
+//	return ""; 
+//}
+public void addremind(String A,String B) throws IOException {
+	Node toadd = new Node(A,B);
+	boolean had = false;
+	int sz = remind.size();
+//	System.out.println(sz);
+	for(int i=0;i<sz;++i){
+		Node no = remind.get(i);
+		if(B.equals(no.getdate())){
+			had = true;
+			remind.set(i, toadd);
+//			System.out.println(no.getdate());
+//			System.out.println(B);
+			break;
+		}
+	}
+	if(had==false)remind.add(toadd);
+	savefile();
+	Alarm();
+//	System.out.println("jjjjjjj");
 }
 
 public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
+	//实际上save之后不能更新提示框内容  需要修改
 	reminderta.setText("");
 	SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");  
 	Calendar today = Calendar.getInstance();  
 	Lunar lunar = new Lunar(today); 
 	String display = "    公历" + chineseDateFormat.format(today.getTime()) + "　农历" + lunar;
 	int sz = remind.size();
-	int cnt = sz;
+	boolean had = false;
 	for(int i=0;i<sz;++i){
 		Node no = remind.get(i);
 		String date = no.getdate();
 		if(date.equals(display)){
-			reminderta.setText(reminderta.getText()+'\n'+"今日为：\n" +display +'\n' + "有提醒事项。");
-			--cnt;
+			had = true;
 		}
+		reminderta.setText(reminderta.getText() + date + '\n');
 	}
-	if(sz!=cnt){
-		reminderta.setText(reminderta.getText()+'\n'+"此外还有"+cnt+"个提醒事项。");
+	if(sz>=1){
+		reminderta.setText(reminderta.getText() + "以上总共有" + sz + "个日期存有提醒事项未处理。" + '\n');
 	}
-	else reminderta.setText(reminderta.getText()+ '\n' + "总共有" + sz + "个提醒事项。");
+	else reminderta.setText(reminderta.getText() + "暂无提醒事项。" + '\n');
+	if(had==true){
+		reminderta.setText(reminderta.getText() + "今日为:\n" + display + '\n' + "还有提醒事项未处理" + '\n');
+		//弹窗 ：今日有提醒事项
+	}
 }
 
     @Override

@@ -38,5 +38,7 @@ public class LabelController {
 		String toset = chosen.getDay();
 //		System.out.println(toset);
 		NL.setText(toset);
+		String toset2 = chosen.getText();
+		reminderdata.setText(toset2);
 	}
 }
