@@ -713,38 +713,91 @@ public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 	
 	//从文件中读取 如果有则显示提醒并删除
 	remind.clear();
-	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
-	String qwe = this.getClass().getResource("").getPath() + "remind.txt";
-//	System.out.println(qwe);
-	Scanner in = new Scanner(new FileInputStream(f));
-	String szs = in.nextLine();
-//	System.out.println(szs);
-	int sz = Stringtonum(szs);
-	String nextcase = CaseString(0);
-	String now = "";
-	int cnt = 0;
-	while(in.hasNext()){
-		String str = in.nextLine();
-		if(str.equals(nextcase)){
-			String date = in.nextLine();
-//			System.out.println(now   + date);
-			Node toadd = new Node(now,date);
-			remind.add(toadd);
-			cnt = cnt + 1;
-			if(cnt==sz)break;
-			now = "";
-			nextcase = CaseString(cnt);
+	File res = new File("");
+	String courseFile;
+	try {
+		courseFile = res.getCanonicalPath();
+//		System.out.println(courseFile);
+		File f = new File(courseFile + "/remind.txt");
+		if(!f.exists())    
+		{    
+		    try {    
+		        f.createNewFile();    
+		    } catch (IOException e) {    
+		        // TODO Auto-generated catch block    
+		        return ;
+		    }    
+		}   
+		Scanner in = new Scanner(new FileInputStream(f));
+		String szs = "";
+		if(in.hasNextLine())szs = in.nextLine();
+//		System.out.println(szs);
+		int sz = Stringtonum(szs);
+		String nextcase = CaseString(0);
+		String now = "";
+		int cnt = 0;
+		while(in.hasNext()){
+			String str = in.nextLine();
+			if(str.equals(nextcase)){
+				String date = in.nextLine();
+//				System.out.println(now   + date);
+				Node toadd = new Node(now,date);
+				remind.add(toadd);
+				cnt = cnt + 1;
+				if(cnt==sz)break;
+				now = "";
+				nextcase = CaseString(cnt);
+			}
+			else now = now + str + '\n';
 		}
-		else now = now + str + '\n';
+		in.close();
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
 	}
-	in.close();
+//	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
+//	if(!f.exists())    
+//	{    
+//	    try {    
+//	        f.createNewFile();    
+//	    } catch (IOException e) {    
+//	        // TODO Auto-generated catch block    
+//	        return ;
+//	    }    
+//	}   
+//	String qwe = this.getClass().getResource("").getPath() + "remind.txt";
+////	System.out.println(qwe);
+//	Scanner in = new Scanner(new FileInputStream(f));
+//	String szs = in.nextLine();
+////	System.out.println(szs);
+//	int sz = Stringtonum(szs);
+//	String nextcase = CaseString(0);
+//	String now = "";
+//	int cnt = 0;
+//	while(in.hasNext()){
+//		String str = in.nextLine();
+//		if(str.equals(nextcase)){
+//			String date = in.nextLine();
+////			System.out.println(now   + date);
+//			Node toadd = new Node(now,date);
+//			remind.add(toadd);
+//			cnt = cnt + 1;
+//			if(cnt==sz)break;
+//			now = "";
+//			nextcase = CaseString(cnt);
+//		}
+//		else now = now + str + '\n';
+//	}
+//	in.close();
 }
 
 public void savefile() throws IOException
 {
-	File f = new File(this.getClass().getResource("").getPath() + "remind.txt");
+	File res = new File("");
+	String courseFile = res.getCanonicalPath();
+	File f = new File(courseFile + "/remind.txt");
 //	File path = new File("\\remind.txt");//参数为空
-	String courseFile = f.getCanonicalPath() ;
+//	String courseFile = f.getCanonicalPath() ;
 //	System.out.println(courseFile);
 	PrintStream out = new PrintStream(f);
 	int sz = remind.size();
@@ -759,19 +812,7 @@ public void savefile() throws IOException
 	out.close();
 	//弹窗：保存成功
 }
-//public String findremind(String s){
-//	System.out.println(s);
-//	int sz = remind.size();
-//	System.out.println(sz);
-//	for(int i=0;i<sz;++i){
-//		Node no = remind.get(i);
-//		System.out.println(no.getdate());
-//		if(s.equals(no.getdate())){
-//			return no.gettext();
-//		}
-//	}
-//	return ""; 
-//}
+
 public void addremind(String A,String B) throws IOException {
 	Node toadd = new Node(A,B);
 	boolean had = false;
