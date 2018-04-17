@@ -801,6 +801,7 @@ public void Check() throws FileNotFoundException {	//查询当前日期有没有提醒
 
 public void savefile() throws IOException
 {
+	Collections.sort(remind);  
 	File res = new File("");
 	String courseFile = res.getCanonicalPath();
 	File f = new File(courseFile + "/remind.txt");
@@ -836,6 +837,7 @@ public void del(String B){
 }
 public boolean EmptyString(String s){
 	int len = s.length();
+	if(len==0)return true;
 	for(int i=0;i<len;++i){
 		char ch = s.charAt(i);
 		if(ch!=' '&&ch!='\n')return false;
@@ -846,6 +848,7 @@ public void addremind(String A,String B) throws IOException {
 	Node toadd = new Node(A,B);
 	if(EmptyString(A)==true){
 		del(B);
+		savefile();
 		Alarm(false);
 		return;
 	}
@@ -881,19 +884,20 @@ public void Alarm(boolean init) {	//闹钟初始化，如果有按下闹钟按钮则提醒
 		Node no = remind.get(i);
 		String date = no.getdate();
 		if(date.equals(display)){
+			reminderta.setText(reminderta.getText() + "今日为:\n" + display + '\n' + "有提醒事项未处理。\n" + '\n');
 			had = true;
+			break;
 		}
-		reminderta.setText(reminderta.getText() + date + '\n');
 	}
 	if(sz>=1){
-		reminderta.setText(reminderta.getText() + "以上总共有" + sz + "个日期存有提醒事项未处理。" + '\n');
+		reminderta.setText(reminderta.getText() + "以下总共有" + sz + "个日期存有提醒事项未处理。" + '\n');
+		for(int i=0;i<sz;++i){
+			Node no = remind.get(i);
+			String date = no.getdate();
+			reminderta.setText(reminderta.getText() + date + '\n');
+		}
 	}
 	else reminderta.setText(reminderta.getText() + "暂无提醒事项。" + '\n');
-	if(had==true){
-		reminderta.setText(reminderta.getText() + "今日为:\n" + display + '\n' + "还有提醒事项未处理" + '\n');
-		//弹窗 ：今日有提醒事项
-//		Pop_win("今日有提醒事项");
-	}
 	if(had==true&&init==true){
 		Pop_win("今日有提醒事项");
 	}
