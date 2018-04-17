@@ -23,7 +23,7 @@ public class LabelController {
 	@FXML
 	Button save;
 	
-	Controller T = new Controller();
+	Controller T;
 	
 	@FXML
 	public void save_reminder() throws IOException {
@@ -40,5 +40,7 @@ public class LabelController {
 		NL.setText(toset);
 		String toset2 = chosen.getText();
 		reminderdata.setText(toset2);
+		ControlClass c = new ControlClass();
+		T = c.getRes();
 	}
 }

@@ -821,9 +821,34 @@ public void savefile() throws IOException
 	Pop_win("保存成功");
 	//弹窗：保存成功
 }
-
+public void del(String B){
+	int sz = remind.size();
+//	System.out.println(sz);
+	for(int i=0;i<sz;++i){
+		Node no = remind.get(i);
+		if(no.getdate()==B){
+			remind.remove(i);
+//			System.out.println(remind.size());
+			return;
+		}
+	}
+	return;
+}
+public boolean EmptyString(String s){
+	int len = s.length();
+	for(int i=0;i<len;++i){
+		char ch = s.charAt(i);
+		if(ch!=' '&&ch!='\n')return false;
+	}
+	return true;
+}
 public void addremind(String A,String B) throws IOException {
 	Node toadd = new Node(A,B);
+	if(EmptyString(A)==true){
+		del(B);
+		Alarm(false);
+		return;
+	}
 	boolean had = false;
 	int sz = remind.size();
 //	System.out.println(sz);
@@ -839,11 +864,10 @@ public void addremind(String A,String B) throws IOException {
 	}
 	if(had==false)remind.add(toadd);
 	savefile();
-	Alarm();
-//	System.out.println("jjjjjjj");
+	Alarm(false);
 }
 
-public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
+public void Alarm(boolean init) {	//闹钟初始化，如果有按下闹钟按钮则提醒
 	//实际上save之后不能更新提示框内容  需要修改
 	reminderta.clear();
 	reminderta.setText("");
@@ -868,6 +892,9 @@ public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
 	if(had==true){
 		reminderta.setText(reminderta.getText() + "今日为:\n" + display + '\n' + "还有提醒事项未处理" + '\n');
 		//弹窗 ：今日有提醒事项
+//		Pop_win("今日有提醒事项");
+	}
+	if(had==true&&init==true){
 		Pop_win("今日有提醒事项");
 	}
 }
@@ -879,6 +906,6 @@ public void Alarm() {	//闹钟初始化，如果有按下闹钟按钮则提醒
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-    	Alarm();
+    	Alarm(true);
     }
 }
