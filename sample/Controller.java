@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -328,12 +328,26 @@ public class Controller implements Initializable {
     @FXML
     TextArea reminderta;
     
+    @FXML
+    ComboBox hourcb;
+
+    @FXML
+    ComboBox mincb;
+    
+    @FXML
+    Button open;
+    
+    @FXML
+    Button close;
 
    static List<Node> remind = new ArrayList<Node>();
 //   List<String> remind = new ArrayList<String>();
    int year[] = new int[202];
    int month[] = new int [13];
+   int hour[] =  new int [24];
+   int min[] = new int [60];
    int ChosenButton;
+   boolean flag=true;
   @FXML
   public void demo()
   {
@@ -349,6 +363,14 @@ public class Controller implements Initializable {
       {
           year[i] = 1900 + i;
       }
+      for(int i= 0; i<24; ++i) {
+    	  hour[i] = i;
+      }
+      for(int i=0; i < 60; ++i) {
+    	  min[i] = i;
+      }
+      ObservableList<String> hours = FXCollections.observableArrayList();
+      ObservableList<String> mins = FXCollections.observableArrayList();
       ObservableList<String> yeararr = FXCollections.observableArrayList();
       ObservableList<String> montharr = FXCollections.observableArrayList();
 
@@ -361,6 +383,14 @@ public class Controller implements Initializable {
       {
           montharr.add(month[j] + "");
       }
+      for(int i=0; i<24; ++i) {
+    	  hours.add(hour[i] +"");
+      }
+      for(int i=0; i<60; ++i) {
+    	  mins.add(min[i] +"");
+      }
+      hourcb.setItems(hours);
+      mincb.setItems(mins);
       yearcb.setItems(yeararr);
       monthcb.setItems(montharr);
 
@@ -868,6 +898,42 @@ public void addremind(String A,String B) throws IOException {
 	if(had==false)remind.add(toadd);
 	savefile();
 	Alarm(false);
+}
+int sethour,setmin;
+Timer t;
+@FXML
+public void openalarm() {
+	sethour = Integer.parseInt(hourcb.getValue().toString());
+    setmin = Integer.parseInt(mincb.getValue().toString());
+    flag = true;
+    Pop_win("开启闹钟!");
+    t = new Timer();
+    Task task = new Task();
+    t.schedule(task, 0, 1000);
+}
+
+class Task extends TimerTask{
+	public void run() {
+		GregorianCalendar calendar = new GregorianCalendar();
+		int tmin,thour;
+		tmin = calendar.get(Calendar.MINUTE);
+		thour = calendar.get(Calendar.HOUR_OF_DAY);
+		if(sethour == thour && setmin==tmin && flag) {
+			Platform.runLater(()->{
+				Pop_win("闹钟提醒!");
+				t.cancel();
+			});
+		}
+		System.out.println(sethour + " " + thour + " " +setmin+ " " +tmin);
+	}
+}
+
+@FXML
+public void closealarm() {
+	flag = false;
+	t.cancel();
+	Pop_win("关闭闹钟!");
+	
 }
 
 public void Alarm(boolean init) {	//闹钟初始化，如果有按下闹钟按钮则提醒

@@ -206,5 +206,14 @@
          </font>
       </Label>
       <TextArea fx:id="reminderta" layoutX="589.0" layoutY="122.0" prefHeight="200.0" prefWidth="270.0" />
+      <Button fx:id="open" layoutX="927.0" layoutY="61.0" mnemonicParsing="false" onAction="#openalarm" prefHeight="32.0" prefWidth="70.0" text="开启闹钟" />
+      <ComboBox fx:id="hourcb" layoutX="667.0" layoutY="66.0" prefHeight="23.0" prefWidth="78.0" />
+      <Button fx:id="close" layoutX="1010.0" layoutY="61.0" mnemonicParsing="false" onAction="#closealarm" prefHeight="32.0" prefWidth="70.0" text="关闭闹钟" />
+      <ComboBox fx:id="mincb" layoutX="792.0" layoutY="66.0" prefHeight="23.0" prefWidth="78.0" />
+      <Text layoutX="760.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" wrappingWidth="16.888671875">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
